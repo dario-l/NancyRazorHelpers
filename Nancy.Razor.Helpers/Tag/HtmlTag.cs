@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Nancy.Razor.Helpers.Tag
 {
@@ -90,13 +85,10 @@ namespace Nancy.Razor.Helpers.Tag
 
         public HtmlTag WithNonEmptyAttribute(string name, object value)
         {
-            if (value != null && !HaveAttribute(name))
-            {
-                var attribute = new HtmlAttribute(name, this);
-                attribute.WithValue(value);
-                _attributes.Add(attribute.Name, attribute);
-            }
-
+            if (value == null || HaveAttribute(name)) return this;
+            var attribute = new HtmlAttribute(name, this);
+            attribute.WithValue(value);
+            _attributes.Add(attribute.Name, attribute);
             return this;
         }
 
@@ -108,7 +100,6 @@ namespace Nancy.Razor.Helpers.Tag
                 attr.WithNovalue();
                 _attributes.Add(attr.Name, attr);
             }
-
             return this;
         }
 

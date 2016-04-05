@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Nancy.Razor.Helpers.Extensions;
 using Nancy.ViewEngines.Razor;
 
@@ -55,7 +51,7 @@ namespace Nancy.Razor.Helpers.Tag
         {
             var name = property.Name;
 
-            var check = new HtmlTag("input").
+            var tag = new HtmlTag("input").
                 WithAttribute("type", HtmlInputType.Checkbox.ToString().ToLowerInvariant()).
                 WithAttribute("name", name.ToLowerInvariant()).
                 WithAttribute("value", true.ToString());
@@ -66,10 +62,12 @@ namespace Nancy.Razor.Helpers.Tag
 
             if (propValue)
             {
-                check.WithEmptyAttribute("checked");
+                tag.WithEmptyAttribute("checked");
             }
 
-            return check;
+            tag.WithAttributes(htmlAttributes);
+
+            return tag;
         }
 
         private static bool GetDefaultBoolValue(PropertyInfo property)
@@ -94,18 +92,14 @@ namespace Nancy.Razor.Helpers.Tag
                 RawContent = property.GetPresentationName()
             };
 
-            if (htmlAttributes != null)
-            {
-                tag.WithAttributes(htmlAttributes);
-            }
+            tag.WithAttributes(htmlAttributes);
             return tag;
         }
 
-        public static HtmlTag CreateSelectFor<TModel, TR>(TModel model, Expression<Func<TModel, TR>> prop,
-            SelectList items) where TModel : class
+        public static HtmlTag CreateSelectFor<TModel, TR>(TModel model, Expression<Func<TModel, TR>> prop, SelectList items, object htmlAttributes = null)
+            where TModel : class
         {
-
-            if (model == null) return CreateSelectFor(prop, items);
+            if (model == null) return CreateSelectFor(prop, items, htmlAttributes);
 
             var nameProperty = prop.AsPropertyInfo();
             if (nameProperty == null || !nameProperty.CanRead) return null;
@@ -121,10 +115,11 @@ namespace Nancy.Razor.Helpers.Tag
                     WithAttribute("value", item.Value).
                     RawContent = item.Text;
             }
+            tag.WithAttributes(htmlAttributes);
             return tag;
         }
 
-        public static HtmlTag CreateSelectFor<TModel, TR>(Expression<Func<TModel, TR>> prop, SelectList items)
+        public static HtmlTag CreateSelectFor<TModel, TR>(Expression<Func<TModel, TR>> prop, SelectList items, object htmlAttributes = null)
             where TModel : class
         {
             var name = prop.AsPropertyInfo();
@@ -139,6 +134,7 @@ namespace Nancy.Razor.Helpers.Tag
                     WithAttribute("value", item.Value).
                     RawContent = item.Text;
             }
+            tag.WithAttributes(htmlAttributes);
             return tag;
         }
     }

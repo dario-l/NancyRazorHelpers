@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Nancy.Razor.Helpers.Extensions;
 using Nancy.Razor.Helpers.Tag;
 using Nancy.ViewEngines.Razor;
@@ -12,11 +9,33 @@ namespace Nancy.Razor.Helpers
 {
     public static class SelectExtensions
     {
-        public static IHtmlString DropDownListFor<TModel, TR>(this HtmlHelpers<TModel> html,
-            Expression<Func<TModel, TR>> prop, SelectList items) where TModel : class
+        public static IHtmlString DropDownListFor<TModel, TR>(
+            this HtmlHelpers<TModel> html,
+            Expression<Func<TModel, TR>> prop,
+            SelectList items,
+            string emptyElement,
+            object htmlAttributes) where TModel : class
         {
-            var tag = HtmlTagBuilder.CreateSelectFor(html.Model, prop, items);
+            var tag = HtmlTagBuilder.CreateSelectFor(html.Model, prop, items, htmlAttributes);
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
+        }
+
+        public static IHtmlString DropDownListFor<TModel, TR>(
+            this HtmlHelpers<TModel> html,
+            Expression<Func<TModel, TR>> prop,
+            SelectList items,
+            object htmlAttributes) where TModel : class
+        {
+            var tag = HtmlTagBuilder.CreateSelectFor(html.Model, prop, items, htmlAttributes);
+            return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
+        }
+
+        public static IHtmlString DropDownListFor<TModel, TR>(
+            this HtmlHelpers<TModel> html,
+            Expression<Func<TModel, TR>> prop,
+            SelectList items) where TModel : class
+        {
+            return DropDownListFor(html, prop, items, null);
         }
 
         public static IHtmlString DropDownListFor<TModel, TS, TV, TT>(this HtmlHelpers<TModel> html,
