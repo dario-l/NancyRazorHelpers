@@ -14,9 +14,11 @@ namespace Nancy.Razor.Helpers
             Expression<Func<TModel, TR>> prop,
             SelectList items,
             string emptyElement,
-            object htmlAttributes) where TModel : class
+            object htmlAttributes)
+            where TModel : class
         {
             var tag = HtmlTagBuilder.CreateSelectFor(html.Model, prop, items, htmlAttributes);
+            html.AppendValidationResults(tag);
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
 
@@ -24,24 +26,29 @@ namespace Nancy.Razor.Helpers
             this HtmlHelpers<TModel> html,
             Expression<Func<TModel, TR>> prop,
             SelectList items,
-            object htmlAttributes) where TModel : class
+            object htmlAttributes)
+            where TModel : class
         {
             var tag = HtmlTagBuilder.CreateSelectFor(html.Model, prop, items, htmlAttributes);
+            html.AppendValidationResults(tag);
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
 
         public static IHtmlString DropDownListFor<TModel, TR>(
             this HtmlHelpers<TModel> html,
             Expression<Func<TModel, TR>> prop,
-            SelectList items) where TModel : class
+            SelectList items)
+            where TModel : class
         {
             return DropDownListFor(html, prop, items, null);
         }
 
-        public static IHtmlString DropDownListFor<TModel, TS, TV, TT>(this HtmlHelpers<TModel> html,
+        public static IHtmlString DropDownListFor<TModel, TS, TV, TT>(
+            this HtmlHelpers<TModel> html,
             Expression<Func<TModel, IEnumerable<TS>>> source,
             Expression<Func<TModel, TV>> propModelValue, 
-            Expression<Func<TS, TV>> propItemValue, Expression<Func<TS, TT>> propItemText) where TModel : class
+            Expression<Func<TS, TV>> propItemValue, Expression<Func<TS, TT>> propItemText)
+            where TModel : class
         {
 
             var model = html.Model;
@@ -50,9 +57,8 @@ namespace Nancy.Razor.Helpers
             var items = sourceProperty.GetValue(model) as IEnumerable<TS>;
             var list = SelectList.CreateFrom(items, propItemValue, propItemText);
             var tag = HtmlTagBuilder.CreateSelectFor(model, propModelValue, list);
+            html.AppendValidationResults(tag);
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
-
-
     }
 }

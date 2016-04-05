@@ -55,6 +55,7 @@
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\HtmlTagExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
+    <Compile Include="HtmlHelpersValidationExtensions.cs" />
     <Compile Include="LabelExtensions.cs" />
     <Compile Include="SelectExtensions.cs" />
     <Compile Include="SelectList.cs" />

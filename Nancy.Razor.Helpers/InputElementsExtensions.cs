@@ -11,7 +11,6 @@ namespace Nancy.Razor.Helpers
 {
     public static class InputElementsExtensions
     {
-
         public static IHtmlString TextBoxFor<TModel, TR>(this HtmlHelpers<TModel> html,
             Expression<Func<TModel, TR>> prop) where TModel : class
         {
@@ -23,7 +22,7 @@ namespace Nancy.Razor.Helpers
         {
             var tag = HtmlTagBuilder.CreateInputElementFor(html, prop, HtmlInputType.Text, htmlAttributes);
 
-            AppendValidationResults(html, tag);
+            html.AppendValidationResults(tag);
 
             if (html.Model != null)
             {
@@ -46,22 +45,6 @@ namespace Nancy.Razor.Helpers
             }
         }
 
-        private static void AppendValidationResults<TModel>(HtmlHelpers<TModel> htmlHelper, HtmlTag tag)
-        {
-            var validationResult = htmlHelper.RenderContext.Context.ModelValidationResult;
-            var name = tag.Attribute("name").Value;
-            if (validationResult == null) return;
-
-            if (validationResult.Errors.Any(error => error.Key.Equals(name, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                var classAttr = tag.Attribute("class");
-                var @class = classAttr != null
-                    ? string.Concat(classAttr.Value, " input-error")
-                    : "input-error";
-                tag.RemoveAttribute("class").WithAttribute("class", @class);
-            }
-        }
-
         public static IHtmlString PasswordFor<TModel, TR>(this HtmlHelpers<TModel> html,
             Expression<Func<TModel, TR>> prop) where TModel : class
         {
@@ -72,6 +55,7 @@ namespace Nancy.Razor.Helpers
             Expression<Func<TModel, TR>> prop, object htmlAttributes) where TModel : class
         {
             var tag = HtmlTagBuilder.CreateInputElementFor(html, prop, HtmlInputType.Password, htmlAttributes);
+            html.AppendValidationResults(tag);
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
 
@@ -98,6 +82,7 @@ namespace Nancy.Razor.Helpers
             Expression<Func<TModel, TR>> prop, object htmlAttributes) where TModel : class
         {
             var tag = HtmlTagBuilder.CreateCheckBoxFor(html, prop, htmlAttributes);
+            html.AppendValidationResults(tag);
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
 
@@ -117,7 +102,7 @@ namespace Nancy.Razor.Helpers
             var tag = inputType == HtmlInputType.Checkbox ?
                 HtmlTagBuilder.CreateCheckBoxFor(html, prop, htmlAttributes) :
                 HtmlTagBuilder.CreateInputElementFor(html, prop, inputType, htmlAttributes);
-
+            html.AppendValidationResults(tag);
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
 
@@ -148,6 +133,5 @@ namespace Nancy.Razor.Helpers
             }
             return property.GetInputType();
         }
-
     }
 }
