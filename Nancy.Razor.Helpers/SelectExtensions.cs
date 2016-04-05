@@ -13,19 +13,6 @@ namespace Nancy.Razor.Helpers
             this HtmlHelpers<TModel> html,
             Expression<Func<TModel, TR>> prop,
             SelectList items,
-            string emptyElement,
-            object htmlAttributes)
-            where TModel : class
-        {
-            var tag = HtmlTagBuilder.CreateSelectFor(html.Model, prop, items, htmlAttributes);
-            html.AppendValidationResults(tag);
-            return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
-        }
-
-        public static IHtmlString DropDownListFor<TModel, TR>(
-            this HtmlHelpers<TModel> html,
-            Expression<Func<TModel, TR>> prop,
-            SelectList items,
             object htmlAttributes)
             where TModel : class
         {
