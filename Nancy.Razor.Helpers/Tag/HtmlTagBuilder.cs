@@ -22,12 +22,28 @@ namespace Nancy.Razor.Helpers.Tag
 
             if (inputType != HtmlInputType.Password)
             {
-                tag.ApplyModelProperty(html.Model, propertyInfo.Name);
+                tag.ApplyValueProperty(html.Model, propertyInfo.Name);
             }
-
 
             tag.WithAttributes(htmlAttributes);
 
+            return tag;
+        }
+
+        public static HtmlTag CreateTextareaElementFor<TModel, TR>(
+            HtmlHelpers<TModel> html,
+            Expression<Func<TModel, TR>> prop,
+            object htmlAttributes) where TModel : class
+        {
+            var propertyInfo = prop.AsPropertyInfo();
+            if (propertyInfo == null) return null;
+            var name = propertyInfo.Name;
+
+            var tag = new HtmlTag("textarea").
+                WithAttribute("name", name.ToLowerInvariant());
+
+            tag.WithAttributes(htmlAttributes);
+            tag.ApplyInnerTextProperty(html.Model, propertyInfo.Name);
             return tag;
         }
 
@@ -41,10 +57,7 @@ namespace Nancy.Razor.Helpers.Tag
             {
                 return CreateCheckboxForBool(html, property, htmlAttributes);
             }
-            else
-            {
-                return CreateCheckboxForBool(html, property, htmlAttributes);
-            }
+            return CreateCheckboxForBool(html, property, htmlAttributes);
         }
 
         private static HtmlTag CreateCheckboxForBool<TModel>(HtmlHelpers<TModel> html, PropertyInfo property, object htmlAttributes) where TModel : class
@@ -56,9 +69,9 @@ namespace Nancy.Razor.Helpers.Tag
                 WithAttribute("name", name.ToLowerInvariant()).
                 WithAttribute("value", true.ToString());
 
-            var propValue = html.Model != null && property.CanRead ?
-                (bool)Convert.ToBoolean(property.GetValue(html.Model)) :
-                 GetDefaultBoolValue(property);
+            var propValue = html.Model != null && property.CanRead
+                ? Convert.ToBoolean(property.GetValue(html.Model))
+                : GetDefaultBoolValue(property);
 
             if (propValue)
             {
@@ -78,7 +91,6 @@ namespace Nancy.Razor.Helpers.Tag
             {
                 defaultvalue = Convert.ToBoolean(defaultAttr.Value);
             }
-
             return defaultvalue;
         }
 

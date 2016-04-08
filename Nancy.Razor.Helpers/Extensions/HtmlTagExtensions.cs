@@ -6,7 +6,7 @@ namespace Nancy.Razor.Helpers.Extensions
 {
     public static class HtmlTagExtensions
     {
-        public static void ApplyModelProperty(this HtmlTag tag, object model, string property)
+        public static void ApplyValueProperty(this HtmlTag tag, object model, string property)
         {
             if (model == null) return;
 
@@ -14,11 +14,25 @@ namespace Nancy.Razor.Helpers.Extensions
             if (modelProperty != null && modelProperty.CanRead)
             {
                 var displayFormat = modelProperty.GetCustomAttribute<DisplayFormatAttribute>();
+                var value = modelProperty.GetValue(model);
+                if (value == null) return;
                 tag.WithNonEmptyAttribute(
                     "value",
-                    displayFormat == null
-                        ? modelProperty.GetValue(model)
-                        : FormatForDisplay(displayFormat, modelProperty.GetValue(model)));
+                    displayFormat == null ? value : FormatForDisplay(displayFormat, value));
+            }
+        }
+
+        public static void ApplyInnerTextProperty(this HtmlTag tag, object model, string property)
+        {
+            if (model == null) return;
+
+            var modelProperty = model.GetType().GetProperty(property);
+            if (modelProperty != null && modelProperty.CanRead)
+            {
+                var displayFormat = modelProperty.GetCustomAttribute<DisplayFormatAttribute>();
+                var value = modelProperty.GetValue(model);
+                if(value == null) return;
+                tag.RawContent = (displayFormat == null ? value : FormatForDisplay(displayFormat, value)).ToString();
             }
         }
 
