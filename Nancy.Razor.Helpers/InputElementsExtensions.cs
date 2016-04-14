@@ -21,28 +21,18 @@ namespace Nancy.Razor.Helpers
             Expression<Func<TModel, TR>> prop, object htmlAttributes) where TModel : class
         {
             var tag = HtmlTagBuilder.CreateInputElementFor(html, prop, HtmlInputType.Text, htmlAttributes);
-
             html.AppendValidationResults(tag);
-
-            if (html.Model != null)
-            {
-                AppendOldValue(html, tag);
-            }
-
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
 
-        private static void AppendOldValue<TModel>(HtmlHelpers<TModel> html, HtmlTag tag)
+        public static IHtmlString TextAreaFor<TModel, TR>(
+            this HtmlHelpers<TModel> html,
+            Expression<Func<TModel, TR>> prop,
+            object htmlAttributes) where TModel : class
         {
-            var type = html.Model.GetType();
-            var name = tag.Attribute("name").Value;
-            var property = type.GetProperty(name, BindingFlags.IgnoreCase | BindingFlags.Instance);
-            if (property != null && property.CanRead)
-            {
-                var value = property.GetValue(html.Model);
-                var valueString = value != null ? value.ToString() : string.Empty;
-                tag.WithAttribute("value", valueString);
-            }
+            var tag = HtmlTagBuilder.CreateTextareaElementFor(html, prop, htmlAttributes);
+            html.AppendValidationResults(tag);
+            return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
 
         public static IHtmlString PasswordFor<TModel, TR>(this HtmlHelpers<TModel> html,
@@ -86,13 +76,12 @@ namespace Nancy.Razor.Helpers
             return tag != null ? new NonEncodedHtmlString(tag.ToString()) : NonEncodedHtmlString.Empty;
         }
 
-
-
         public static IHtmlString InputElementFor<TModel, TR>(this HtmlHelpers<TModel> html,
             Expression<Func<TModel, TR>> prop) where TModel : class
         {
             return InputElementFor(html, prop, null);
         }
+
         public static IHtmlString InputElementFor<TModel, TR>(this HtmlHelpers<TModel> html,
             Expression<Func<TModel, TR>> prop, object htmlAttributes) where TModel : class
         {
