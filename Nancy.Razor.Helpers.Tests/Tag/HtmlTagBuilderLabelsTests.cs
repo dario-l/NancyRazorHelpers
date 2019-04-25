@@ -1,10 +1,8 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nancy.Razor.Helpers.Tag;
-using Nancy.ViewEngines.Razor;
 
-namespace Nancy.Razor.Helpers.Tests
+namespace Nancy.Razor.Helpers.Tests.Tag
 {
 
     class LabelModel

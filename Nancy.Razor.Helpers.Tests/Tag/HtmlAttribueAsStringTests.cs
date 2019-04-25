@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nancy.Razor.Helpers.Tag;
 
-namespace Nancy.Razor.Helpers.Tests
+namespace Nancy.Razor.Helpers.Tests.Tag
 {
     [TestClass]
     public class HtmlAttribueAsStringTests

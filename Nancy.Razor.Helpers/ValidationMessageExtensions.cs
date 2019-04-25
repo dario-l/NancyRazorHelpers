@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Nancy.Razor.Helpers.Tag;
 using Nancy.ViewEngines.Razor;
 
@@ -21,7 +18,7 @@ namespace Nancy.Razor.Helpers
                 return NonEncodedHtmlString.Empty;
             }
 
-            var property = (prop.Body as MemberExpression).Member as PropertyInfo;
+            var property = ((MemberExpression)prop.Body).Member as PropertyInfo;
             var keyName = property.Name;
             var hasError = validationResult.Errors.Any(err => keyName.Equals(err.Key));
             if (!hasError)
@@ -52,8 +49,8 @@ namespace Nancy.Razor.Helpers
                 return NonEncodedHtmlString.Empty;
             }
 
-            var property = (prop.Body as MemberExpression).Member as PropertyInfo;
-            var keyName = property.Name;
+            var property = ((MemberExpression)prop.Body).Member as PropertyInfo;
+            var keyName = property?.Name;
             var tag = new HtmlTag("ul").WithAttribute("class", "error-list");
 
             var errorsToLook = useAllKeys

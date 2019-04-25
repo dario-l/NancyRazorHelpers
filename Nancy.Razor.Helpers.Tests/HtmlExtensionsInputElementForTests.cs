@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Nancy.ViewEngines.Razor;
 
-namespace Nancy.Razor.Helpers.Tests.Tag
+namespace Nancy.Razor.Helpers.Tests
 {
 
     class TestModel

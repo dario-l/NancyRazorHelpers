@@ -16,8 +16,7 @@ namespace Nancy.Razor.Helpers.Tag
         public HtmlAttribute Attribute(string name)
         {
             var attrName = name.ToLowerInvariant();
-            HtmlAttribute attr;
-            _attributes.TryGetValue(attrName, out attr);
+            _attributes.TryGetValue(attrName, out var attr);
             return attr;
         }
 
@@ -36,12 +35,9 @@ namespace Nancy.Razor.Helpers.Tag
             _parent = parent;
         }
 
-        public bool IsRoot
-        {
-            get { return _parent == null; }
-        }
+        public bool IsRoot => _parent == null;
 
-        public IEnumerable<HtmlTag> Childs { get { return _childs; } }
+        public IEnumerable<HtmlTag> Childs => _childs;
 
         public HtmlTag WithAttributes(object attributes)
         {
@@ -73,15 +69,9 @@ namespace Nancy.Razor.Helpers.Tag
             return currentTag;
         }
 
-        public HtmlTag ToParent()
-        {
-            return this._parent;
-        }
+        public HtmlTag ToParent() => this._parent;
 
-        public HtmlTag ToParentIfAny()
-        {
-            return IsRoot ? this : this._parent;
-        }
+        public HtmlTag ToParentIfAny() => IsRoot ? this : this._parent;
 
         public HtmlTag WithNonEmptyAttribute(string name, object value)
         {
@@ -94,24 +84,17 @@ namespace Nancy.Razor.Helpers.Tag
 
         public HtmlTag WithEmptyAttribute(string name)
         {
-            if (!HaveAttribute(name))
-            {
-                var attr = new HtmlAttribute(name, this);
-                attr.WithNovalue();
-                _attributes.Add(attr.Name, attr);
-            }
+            if (HaveAttribute(name)) return this;
+
+            var attr = new HtmlAttribute(name, this);
+            attr.WithNovalue();
+            _attributes.Add(attr.Name, attr);
             return this;
         }
 
-        public HtmlTag WithEmptyAttributeIf(string name, bool add)
-        {
-            return add ? WithEmptyAttribute(name) : this;
-        }
+        public HtmlTag WithEmptyAttributeIf(string name, bool add) => add ? WithEmptyAttribute(name) : this;
 
-        private bool HaveAttribute(string name)
-        {
-            return _attributes.ContainsKey(name.ToLowerInvariant());
-        }
+        private bool HaveAttribute(string name) => _attributes.ContainsKey(name.ToLowerInvariant());
 
         public HtmlTag RemoveAttribute(string name)
         {
@@ -125,18 +108,17 @@ namespace Nancy.Razor.Helpers.Tag
 
         public HtmlTag WithAttribute(string name, object value)
         {
-            if (!HaveAttribute(name))
+            if (HaveAttribute(name)) return this;
+
+            var attribute = new HtmlAttribute(name, this);
+            if (value == null)
             {
-                var attribute = new HtmlAttribute(name, this);
-                if (value == null)
-                {
-                    attribute.WithNovalue();
-                }
-                else
-                {
-                    attribute.WithValue(value);
-                    _attributes.Add(attribute.Name, attribute);
-                }
+                attribute.WithNovalue();
+            }
+            else
+            {
+                attribute.WithValue(value);
+                _attributes.Add(attribute.Name, attribute);
             }
             return this;
         }
@@ -164,12 +146,12 @@ namespace Nancy.Razor.Helpers.Tag
             {
                 foreach (var child in _childs)
                 {
-                    sb.Append(child.ToString());
+                    sb.Append(child);
                 }
             }
             else if (!string.IsNullOrEmpty(RawContent))
             {
-                sb.Append(RawContent);
+                sb.Append(System.Net.WebUtility.HtmlEncode(RawContent));
             }
 
             if (!renderAutoClose)
